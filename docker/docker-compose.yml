@@ -1,0 +1,82 @@
+# 2025-09-30 17:45, Claude 작성
+# Docker Compose - 개발 환경
+# 사용법: docker-compose up -d
+
+version: '3.8'
+
+services:
+  # === Weaviate (벡터 DB) ===
+  weaviate:
+    image: semitechnologies/weaviate:1.25.5
+    container_name: csai-weaviate
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'  # 외부 임베딩 사용
+      CLUSTER_HOSTNAME: 'node1'
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    restart: unless-stopped
+    networks:
+      - csai-network
+
+  # === MongoDB (NoSQL DB) ===
+  mongodb:
+    image: mongo:7.0
+    container_name: csai-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: cs_ai_agent
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    restart: unless-stopped
+    networks:
+      - csai-network
+
+  # === Redis (캐싱) ===
+  redis:
+    image: redis:7.2-alpine
+    container_name: csai-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - csai-network
+
+  # === MongoDB Express (선택: MongoDB GUI) ===
+  mongo-express:
+    image: mongo-express:1.0-20
+    container_name: csai-mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    networks:
+      - csai-network
+
+volumes:
+  weaviate_data:
+    driver: local
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  csai-network:
+    driver: bridge
