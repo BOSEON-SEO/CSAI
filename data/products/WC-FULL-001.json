@@ -1,0 +1,116 @@
+{
+  "product_code": "WC-FULL-001",
+  "product_name": "ToBe HD Pro Webcam",
+  "category": "webcam",
+  "subcategory": "fullhd",
+  "price": {
+    "original": 129000,
+    "discount": 109000,
+    "currency": "KRW"
+  },
+  "description": "Full HD 웹캠. 자동 초점, 저조도 보정, 노이즈 캔슬링 마이크 내장",
+  "specifications": {
+    "resolution": {
+      "max": "1920x1080 (Full HD)",
+      "supported": ["1920x1080", "1280x720", "640x480"]
+    },
+    "frame_rate": {
+      "1080p": "30fps",
+      "720p": "60fps"
+    },
+    "lens": {
+      "type": "유리 렌즈 5매",
+      "field_of_view": 90,
+      "unit": "degrees",
+      "aperture": "f/2.0",
+      "autofocus": true,
+      "focus_range": "10cm ~ 무한대"
+    },
+    "sensor": {
+      "type": "CMOS",
+      "size": "1/3 inch"
+    },
+    "microphone": {
+      "type": "듀얼 스테레오",
+      "noise_cancellation": true,
+      "pickup_range": 3,
+      "unit": "meters"
+    }
+  },
+  "features": {
+    "auto_light_correction": true,
+    "privacy_shutter": true,
+    "universal_clip": "모니터, 삼각대, 노트북 장착 가능",
+    "led_indicator": "사용 중 표시"
+  },
+  "connectivity": {
+    "interface": "USB 2.0",
+    "cable_type": "직조 케이블",
+    "cable_length": 1.5,
+    "unit": "m"
+  },
+  "compatibility": {
+    "windows": ["Windows 11", "Windows 10", "Windows 8.1"],
+    "macos": ["macOS 10.14+"],
+    "linux": ["Ubuntu 18.04+"],
+    "software_compatibility": [
+      "Zoom",
+      "Microsoft Teams",
+      "Google Meet",
+      "Skype",
+      "Discord",
+      "OBS Studio",
+      "Streamlabs"
+    ]
+  },
+  "software": {
+    "name": "ToBe Webcam Control",
+    "version": "1.5.2",
+    "features": [
+      "밝기, 대비, 채도 조정",
+      "화이트밸런스 설정",
+      "줌 및 팬 기능",
+      "배경 흐림 효과 (소프트웨어 기반)"
+    ],
+    "driver_required": false
+  },
+  "firmware": {
+    "current_version": "2.1.3",
+    "release_date": "2025-09-05",
+    "update_method": "ToBe Webcam Control",
+    "changelog": [
+      "저조도 환경 화질 개선",
+      "오토포커스 속도 향상",
+      "macOS Sonoma 호환성 추가"
+    ]
+  },
+  "warranty": {
+    "period_months": 24,
+    "coverage": "제조 결함 및 정상 사용 중 고장"
+  },
+  "included_items": [
+    "웹캠 본체",
+    "삼각대 마운트 어댑터",
+    "사용 설명서"
+  ],
+  "common_issues": [
+    {
+      "issue": "화면이 흐릿함",
+      "solution": "렌즈 표면을 마른 천으로 닦고, 오토포커스가 켜져있는지 확인하세요"
+    },
+    {
+      "issue": "Zoom에서 웹캠이 인식 안됨",
+      "solution": "Zoom 설정 > 비디오에서 카메라를 ToBe HD Pro Webcam으로 수동 선택하세요"
+    },
+    {
+      "issue": "마이크 볼륨이 작음",
+      "solution": "Windows 사운드 설정에서 마이크 볼륨을 80-100%로 올리세요"
+    },
+    {
+      "issue": "역광에서 얼굴이 어둡게 나옴",
+      "solution": "ToBe Webcam Control에서 자동 노출 보정 기능을 켜세요"
+    }
+  ],
+  "created_at": "2025-09-30T18:40:00Z",
+  "updated_at": "2025-09-30T18:40:00Z"
+}

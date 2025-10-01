@@ -1,0 +1,142 @@
+{
+  "product_code": "HUB-USB-001",
+  "product_name": "ToBe USB-C Multi-Port Hub",
+  "category": "hub",
+  "subcategory": "usb_hub",
+  "price": {
+    "original": 89000,
+    "discount": 79000,
+    "currency": "KRW"
+  },
+  "description": "7-in-1 USB-C 멀티포트 허브. USB-C PD 충전, HDMI, USB 3.0, SD 카드 리더 지원",
+  "specifications": {
+    "ports": {
+      "usb_c_pd": {
+        "count": 1,
+        "max_power": "100W",
+        "pass_through_charging": true,
+        "note": "100W 입력, 최대 85W 패스스루 (허브 소비 15W)"
+      },
+      "usb_a_3_0": {
+        "count": 3,
+        "speed": "5Gbps",
+        "max_power_per_port": "900mA"
+      },
+      "hdmi": {
+        "count": 1,
+        "version": "2.0",
+        "max_resolution": "4K@60Hz",
+        "supported_resolutions": ["4K@60Hz", "2K@120Hz", "1080p@144Hz"]
+      },
+      "sd_card": {
+        "count": 1,
+        "type": "SD/SDHC/SDXC",
+        "speed": "UHS-I (최대 104MB/s)"
+      },
+      "micro_sd": {
+        "count": 1,
+        "type": "Micro SD/SDHC/SDXC",
+        "speed": "UHS-I (최대 104MB/s)"
+      }
+    },
+    "total_ports": 7,
+    "chipset": "VL817-Q7",
+    "cable_length": 15,
+    "cable_unit": "cm",
+    "cable_type": "일체형 USB-C",
+    "housing_material": "알루미늄 합금",
+    "weight": "85g",
+    "dimensions": {
+      "length": 110,
+      "width": 48,
+      "height": 14,
+      "unit": "mm"
+    }
+  },
+  "features": {
+    "plug_and_play": true,
+    "hot_swappable": true,
+    "overcurrent_protection": true,
+    "heat_dissipation": "알루미늄 바디",
+    "led_indicator": "전원 상태 표시"
+  },
+  "compatibility": {
+    "laptops": [
+      "MacBook Pro (2016+)",
+      "MacBook Air (2018+)",
+      "Dell XPS",
+      "HP Spectre",
+      "Lenovo ThinkPad",
+      "Samsung Galaxy Book"
+    ],
+    "tablets": [
+      "iPad Pro (USB-C 모델)",
+      "Samsung Galaxy Tab S"
+    ],
+    "phones": [
+      "Samsung Galaxy (USB-C, DEX 모드 지원)",
+      "Google Pixel"
+    ],
+    "operating_systems": [
+      "Windows 11", 
+      "Windows 10",
+      "macOS 10.14+",
+      "iPadOS 13+",
+      "Android 9.0+",
+      "Chrome OS",
+      "Linux"
+    ]
+  },
+  "use_cases": [
+    {
+      "scenario": "노트북 도킹 스테이션",
+      "description": "외부 모니터 연결 + USB 기기 + 충전을 동시에"
+    },
+    {
+      "scenario": "데이터 전송",
+      "description": "SD 카드와 USB 드라이브에서 동시 파일 복사"
+    },
+    {
+      "scenario": "모바일 업무",
+      "description": "태블릿에 키보드, 마우스, 모니터 연결"
+    }
+  ],
+  "firmware": {
+    "current_version": "N/A",
+    "update_method": "펌웨어 업데이트 미지원",
+    "note": "하드웨어 기반 동작, 드라이버 불필요"
+  },
+  "warranty": {
+    "period_months": 18,
+    "coverage": "제조 결함 및 정상 사용 중 고장"
+  },
+  "included_items": [
+    "USB-C 허브 본체",
+    "휴대용 파우치",
+    "사용 설명서"
+  },
+  "common_issues": [
+    {
+      "issue": "HDMI 출력이 안됨",
+      "solution": "노트북이 DP Alt Mode를 지원하는지 확인하세요. 일부 구형 USB-C 포트는 비디오 출력을 지원하지 않습니다"
+    },
+    {
+      "issue": "충전이 느림",
+      "solution": "최소 65W 이상 PD 충전기를 사용하세요. 허브는 15W를 소비하므로 100W 충전기 사용 시 최대 85W 충전 가능합니다"
+    },
+    {
+      "issue": "USB 기기가 인식 안됨",
+      "solution": "전력 소비가 큰 기기(외장 HDD 등)는 별도 전원 어댑터가 필요할 수 있습니다"
+    },
+    {
+      "issue": "4K@60Hz가 안나옴",
+      "solution": "HDMI 2.0 케이블을 사용하고 있는지, 모니터가 4K@60Hz를 지원하는지 확인하세요"
+    },
+    {
+      "issue": "허브가 뜨거움",
+      "solution": "알루미늄 바디가 방열 역할을 하므로 정상입니다. 통풍이 잘 되는 곳에서 사용하세요"
+    }
+  ],
+  "created_at": "2025-09-30T18:45:00Z",
+  "updated_at": "2025-09-30T18:45:00Z"
+}

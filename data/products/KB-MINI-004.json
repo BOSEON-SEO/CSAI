@@ -1,0 +1,82 @@
+{
+  "product_code": "KB-MINI-004",
+  "product_name": "ToBe Compact 60% Keyboard",
+  "category": "keyboard",
+  "subcategory": "mechanical",
+  "price": {
+    "original": 119000,
+    "discount": 99000,
+    "currency": "KRW"
+  },
+  "description": "60% 컴팩트 키보드. 화살표 키 없는 미니멀 디자인으로 책상 공간 절약",
+  "specifications": {
+    "layout": "61키 (60% 컴팩트)",
+    "switch_type": "Kailh Box White (클리키)",
+    "keycap_material": "PBT 서브리메이션",
+    "backlight": "RGB Per-Key",
+    "hotswap": true,
+    "polling_rate": "1000Hz",
+    "nkro": "Full NKRO",
+    "weight": "620g",
+    "dimensions": {
+      "width": 295,
+      "depth": 105,
+      "height": 32,
+      "unit": "mm"
+    }
+  },
+  "connectivity": {
+    "wired": {
+      "enabled": true,
+      "cable_type": "USB Type-C",
+      "cable_length": 1.5,
+      "detachable": true
+    },
+    "wireless": {
+      "enabled": false
+    }
+  },
+  "compatibility": {
+    "windows": ["Windows 11", "Windows 10", "Windows 8.1"],
+    "macos": ["macOS 10.15+"],
+    "linux": ["Ubuntu 20.04+", "Arch Linux"]
+  },
+  "firmware": {
+    "current_version": "3.1.0",
+    "release_date": "2025-09-01",
+    "update_method": "VIA / QMK Toolbox",
+    "changelog": [
+      "VIA 키맵 커스터마이징 지원",
+      "레이어 기능 최대 4개로 확장",
+      "RGB 애니메이션 10종 추가"
+    ]
+  },
+  "warranty": {
+    "period_months": 24,
+    "coverage": "제조 결함 및 정상 사용 중 고장"
+  },
+  "included_items": [
+    "키보드 본체",
+    "USB Type-C 케이블",
+    "키캡 풀러",
+    "스위치 풀러",
+    "추가 컬러 키캡 (ESC, Enter)",
+    "사용 설명서"
+  ],
+  "common_issues": [
+    {
+      "issue": "화살표 키를 어떻게 사용하나요?",
+      "solution": "Fn + WASD 또는 Fn + IJKL로 화살표 키를 사용할 수 있습니다. VIA로 키맵 변경 가능"
+    },
+    {
+      "issue": "레이어 전환이 안됨",
+      "solution": "VIA 프로그램에서 레이어가 올바르게 설정되었는지 확인하세요"
+    },
+    {
+      "issue": "RGB가 부분적으로만 켜짐",
+      "solution": "USB 포트 전원 부족일 수 있습니다. 다른 포트나 전원 어댑터 사용을 권장합니다"
+    }
+  ],
+  "created_at": "2025-09-30T18:15:00Z",
+  "updated_at": "2025-09-30T18:15:00Z"
+}

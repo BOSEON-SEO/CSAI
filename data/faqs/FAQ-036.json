@@ -1,0 +1,14 @@
+{
+  "faq_id": "FAQ-036",
+  "question": "KB-MINI-004에서 F1-F12 키를 어떻게 사용하나요?",
+  "answer": "60% 키보드에는 별도의 F 키가 없지만 Fn 키 조합으로 사용할 수 있습니다. 기본 설정은 Fn + 숫자 키(1-12)가 F1-F12로 매핑되어 있습니다. VIA 소프트웨어를 사용하면 레이어 기능을 통해 F 키를 더 편리한 위치로 재배치할 수 있습니다. 예를 들어, 레이어를 활성화하면 숫자 키가 F 키로 바뀌도록 설정할 수 있습니다. 많은 사용자들이 Caps Lock을 Fn 키로 리매핑하여 사용합니다.",
+  "category": "usage",
+  "subcategory": "keyboard",
+  "related_products": ["KB-MINI-004"],
+  "keywords": ["F키", "기능키", "60%", "VIA", "레이어"],
+  "complexity_level": 2,
+  "answer_confidence": "high",
+  "created_at": "2025-09-30T21:55:00Z",
+  "updated_at": "2025-09-30T21:55:00Z",
+  "language": "ko"
+}

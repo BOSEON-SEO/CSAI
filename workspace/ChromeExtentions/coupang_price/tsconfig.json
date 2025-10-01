@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "module": "ESNext",
+        "target": "ES2021",
+        "types": ["chrome"],
+        "strict": true,
+        "sourceMap": true,
+        "declaration": false,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noUncheckedIndexedAccess": true,
+        "exactOptionalPropertyTypes": true
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules"]
+}

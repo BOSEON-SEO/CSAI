@@ -1,0 +1,14 @@
+{
+  "faq_id": "FAQ-035",
+  "question": "HUB-USB-001을 MacBook과 함께 사용할 수 있나요?",
+  "answer": "네, HUB-USB-001은 MacBook Pro(2016년 이후), MacBook Air(2018년 이후) 등 USB-C 포트가 있는 모든 MacBook과 호환됩니다. macOS에서 모든 기능이 정상 작동하며, 4K@60Hz 외부 디스플레이 연결, USB 기기 사용, PD 충전 패스스루가 모두 가능합니다. 단, M1/M2/M3 칩 MacBook Air와 13인치 MacBook Pro는 외부 디스플레이 1개만 지원하므로 허브를 통해 추가 모니터를 연결할 수 없습니다. 14인치/16인치 MacBook Pro는 다중 디스플레이를 지원합니다.",
+  "category": "compatibility",
+  "subcategory": "hub",
+  "related_products": ["HUB-USB-001"],
+  "keywords": ["MacBook", "Mac", "M1", "M2", "호환"],
+  "complexity_level": 2,
+  "answer_confidence": "high",
+  "created_at": "2025-09-30T21:50:00Z",
+  "updated_at": "2025-09-30T21:50:00Z",
+  "language": "ko"
+}

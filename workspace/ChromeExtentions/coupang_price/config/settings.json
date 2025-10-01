@@ -1,0 +1,21 @@
+{
+    "api": {
+        "server": "https://api.tbnws.co.kr/api/open/crawler/coupang/price",
+        "test": "http://localhost:8080/api/open/crawler/coupang/price",
+        "coupang": "https://www.coupang.com/vp/products"
+    },
+
+    "crawling": {
+        "batchSize": 10,
+
+        "interval": {
+            "min": 10000,
+            "max": 15000
+        },
+
+        "retry": {
+            "max": 3,
+            "interval": 600000
+        }
+    }
+}

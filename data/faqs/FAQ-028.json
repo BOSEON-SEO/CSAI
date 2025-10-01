@@ -1,0 +1,14 @@
+{
+  "faq_id": "FAQ-028",
+  "question": "MS-GAME-001의 RGB를 끌 수 있나요?",
+  "answer": "네, RGB 라이팅은 ToBe Gaming Suite 소프트웨어에서 완전히 끄거나 밝기를 조절할 수 있습니다. 소프트웨어 없이 끄는 방법: 마우스 하단의 DPI 버튼과 좌클릭을 동시에 3초간 눌러 RGB를 끄고 켤 수 있습니다. 절전이 필요한 환경이나 RGB가 거슬리는 경우 유용합니다. 설정은 온보드 메모리에 저장되어 다른 컴퓨터에서도 유지됩니다.",
+  "category": "usage",
+  "subcategory": "mouse",
+  "related_products": ["MS-GAME-001"],
+  "keywords": ["RGB", "라이팅", "끄기", "절전", "LED"],
+  "complexity_level": 1,
+  "answer_confidence": "high",
+  "created_at": "2025-09-30T21:15:00Z",
+  "updated_at": "2025-09-30T21:15:00Z",
+  "language": "ko"
+}

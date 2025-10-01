@@ -1,0 +1,14 @@
+{
+  "faq_id": "FAQ-038",
+  "question": "KB-FULL-002의 절전 모드를 활성화하려면 어떻게 하나요?",
+  "answer": "KB-FULL-002는 자동 절전 기능이 내장되어 있습니다. 10분간 입력이 없으면 자동으로 슬립 모드로 전환되어 배터리를 절약합니다. 아무 키나 누르면 즉시 깨어납니다. 수동으로 절전 모드를 활성화하려면 Fn + F11 키를 누르세요. 추가로 백라이트를 끄거나(Fn + F10) 밝기를 낮추면 배터리 수명을 크게 연장할 수 있습니다. ToBe Keyboard Manager 소프트웨어에서 절전 시간(5분/10분/30분)을 조정할 수 있습니다.",
+  "category": "usage",
+  "subcategory": "keyboard",
+  "related_products": ["KB-FULL-002"],
+  "keywords": ["절전", "배터리", "슬립", "자동", "전원"],
+  "complexity_level": 1,
+  "answer_confidence": "high",
+  "created_at": "2025-09-30T22:05:00Z",
+  "updated_at": "2025-09-30T22:05:00Z",
+  "language": "ko"
+}

@@ -1,0 +1,14 @@
+{
+  "faq_id": "FAQ-033",
+  "question": "KB-SLIM-003은 드라이버 설치가 필요한가요?",
+  "answer": "아니요, KB-SLIM-003은 플러그 앤 플레이 방식으로 드라이버 설치가 필요 없습니다. USB를 연결하면 Windows, macOS, Linux 모두에서 자동으로 인식되어 바로 사용할 수 있습니다. 펌웨어 업데이트도 지원하지 않으며, 별도 소프트웨어 없이 안정적으로 작동하도록 설계되었습니다. 이는 사무실이나 공용 컴퓨터에서 빠르게 사용할 수 있어 편리합니다.",
+  "category": "usage",
+  "subcategory": "keyboard",
+  "related_products": ["KB-SLIM-003"],
+  "keywords": ["드라이버", "플러그 앤 플레이", "설치", "소프트웨어"],
+  "complexity_level": 1,
+  "answer_confidence": "high",
+  "created_at": "2025-09-30T21:40:00Z",
+  "updated_at": "2025-09-30T21:40:00Z",
+  "language": "ko"
+}

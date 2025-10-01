@@ -1,0 +1,97 @@
+{
+  "product_code": "MS-OFFI-002",
+  "product_name": "ToBe Silent Wireless Mouse",
+  "category": "mouse",
+  "subcategory": "office",
+  "price": {
+    "original": 45000,
+    "discount": 39000,
+    "currency": "KRW"
+  },
+  "description": "저소음 무선 마우스. 조용한 클릭과 긴 배터리 수명으로 사무실 환경에 최적화",
+  "specifications": {
+    "sensor": {
+      "type": "Optical",
+      "max_dpi": 1600,
+      "dpi_levels": [800, 1200, 1600]
+    },
+    "buttons": {
+      "count": 5,
+      "programmable": 0,
+      "switch_type": "Silent Tactile",
+      "noise_level": "90% 소음 감소"
+    },
+    "weight": "85g (배터리 포함)",
+    "dimensions": {
+      "length": 110,
+      "width": 62,
+      "height": 38,
+      "unit": "mm"
+    },
+    "grip_type": ["Palm", "Claw"],
+    "scroll_wheel": "고무 처리, 저소음"
+  },
+  "connectivity": {
+    "wired": {
+      "enabled": false
+    },
+    "wireless": {
+      "enabled": true,
+      "type": "2.4GHz",
+      "dongle": {
+        "type": "Nano USB-A",
+        "storage": "마우스 내부 수납 슬롯"
+      },
+      "range_meters": 10,
+      "battery": {
+        "type": "AA 건전지 1개",
+        "battery_life_months": 18,
+        "low_battery_indicator": true
+      }
+    }
+  },
+  "compatibility": {
+    "windows": ["Windows 11", "Windows 10", "Windows 8.1", "Windows 7"],
+    "macos": ["macOS 10.10+"],
+    "linux": ["대부분의 배포판"],
+    "chrome_os": ["Chrome OS 지원"]
+  },
+  "software": {
+    "name": "드라이버 불필요",
+    "version": "N/A",
+    "features": ["플러그 앤 플레이"],
+    "onboard_memory": false
+  },
+  "firmware": {
+    "current_version": "1.0.0",
+    "release_date": "2025-06-01",
+    "update_method": "펌웨어 업데이트 미지원",
+    "changelog": []
+  },
+  "warranty": {
+    "period_months": 12,
+    "coverage": "제조 결함 및 정상 사용 중 고장"
+  },
+  "included_items": [
+    "마우스 본체",
+    "2.4GHz USB 동글",
+    "AA 건전지 1개",
+    "사용 설명서"
+  ],
+  "common_issues": [
+    {
+      "issue": "마우스가 작동하지 않음",
+      "solution": "전원 스위치가 ON 위치인지 확인하고, 배터리를 교체해보세요"
+    },
+    {
+      "issue": "커서가 끊김",
+      "solution": "동글을 마우스와 가까운 USB 포트로 옮기거나, USB 연장 케이블을 사용하세요"
+    },
+    {
+      "issue": "DPI를 변경하고 싶음",
+      "solution": "마우스 하단의 DPI 버튼을 눌러 800/1200/1600 DPI 중 선택할 수 있습니다"
+    }
+  ],
+  "created_at": "2025-09-30T18:30:00Z",
+  "updated_at": "2025-09-30T18:30:00Z"
+}

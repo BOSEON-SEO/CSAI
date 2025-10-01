@@ -1,0 +1,70 @@
+{
+  "product_code": "KB-SLIM-003",
+  "product_name": "ToBe Silent Office Keyboard",
+  "category": "keyboard",
+  "subcategory": "membrane",
+  "price": {
+    "original": 79000,
+    "discount": 69000,
+    "currency": "KRW"
+  },
+  "description": "저소음 사무용 키보드. 멤브레인 방식으로 조용하고 부드러운 타감 제공",
+  "specifications": {
+    "layout": "104키 (풀사이즈)",
+    "switch_type": "저소음 멤브레인",
+    "keycap_material": "ABS",
+    "backlight": "없음",
+    "hotswap": false,
+    "polling_rate": "125Hz",
+    "nkro": "2KRO",
+    "weight": "680g",
+    "dimensions": {
+      "width": 435,
+      "depth": 125,
+      "height": 22,
+      "unit": "mm"
+    }
+  },
+  "connectivity": {
+    "wired": {
+      "enabled": true,
+      "cable_type": "USB Type-A",
+      "cable_length": 1.5,
+      "detachable": false
+    },
+    "wireless": {
+      "enabled": false
+    }
+  },
+  "compatibility": {
+    "windows": ["Windows 11", "Windows 10", "Windows 8.1", "Windows 7"],
+    "macos": ["macOS 10.14+"],
+    "linux": ["대부분의 배포판"]
+  },
+  "firmware": {
+    "current_version": "1.0.2",
+    "release_date": "2025-07-10",
+    "update_method": "펌웨어 업데이트 미지원 (드라이버 불필요)",
+    "changelog": []
+  },
+  "warranty": {
+    "period_months": 12,
+    "coverage": "제조 결함 및 정상 사용 중 고장"
+  },
+  "included_items": [
+    "키보드 본체",
+    "사용 설명서"
+  ],
+  "common_issues": [
+    {
+      "issue": "일부 키가 눌리지 않음",
+      "solution": "키캡을 제거하고 압축 공기로 이물질을 제거해보세요"
+    },
+    {
+      "issue": "키감이 무거워짐",
+      "solution": "장기간 사용 시 멤브레인 특성상 정상적인 현상입니다"
+    }
+  ],
+  "created_at": "2025-09-30T18:10:00Z",
+  "updated_at": "2025-09-30T18:10:00Z"
+}

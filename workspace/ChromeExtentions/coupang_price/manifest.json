@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "쿠팡 가격 크롤러",
+  "version": "1.0",
+  "description": "쿠팡 가격 자동 크롤링",
+  "permissions": ["scripting", "tabs", "alarms", "sidePanel", "storage", "notifications"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_title": "쿠팡 크롤러 실행"
+  },
+  "background": {
+    "service_worker": "dist/background.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "html/panel.html"
+  },
+  "options_page": "html/options.html",
+  "icons": { "16": "icon.png", "48": "icon.png", "128": "icon.png" }
+}

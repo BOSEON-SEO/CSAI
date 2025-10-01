@@ -1,0 +1,14 @@
+{
+  "faq_id": "FAQ-040",
+  "question": "웹캠의 마이크 음질이 좋지 않아요",
+  "answer": "마이크 음질 개선 방법: 1) Windows 사운드 설정에서 마이크 볼륨을 80-100%로 설정합니다. 2) ToBe Webcam Control에서 노이즈 캔슬링 기능이 활성화되어 있는지 확인하세요. 3) 마이크와 입의 거리를 1-2m 이내로 유지하세요. WC-FULL-001은 최대 3m까지 픽업하지만 가까울수록 음질이 좋습니다. 4) 소음이 많은 환경에서는 Zoom이나 Teams의 자체 노이즈 억제 기능을 함께 사용하세요. 5) 에어컨, 선풍기 등 연속 소음원 근처는 피하세요.",
+  "category": "troubleshooting",
+  "subcategory": "webcam",
+  "related_products": ["WC-FULL-001"],
+  "keywords": ["마이크", "음질", "소음", "노이즈", "볼륨"],
+  "complexity_level": 2,
+  "answer_confidence": "high",
+  "created_at": "2025-09-30T22:15:00Z",
+  "updated_at": "2025-09-30T22:15:00Z",
+  "language": "ko"
+}

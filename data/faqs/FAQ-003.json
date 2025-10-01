@@ -1,0 +1,14 @@
+{
+  "faq_id": "FAQ-003",
+  "question": "macOS에서 KB-TKL-001 키보드를 사용할 수 있나요?",
+  "answer": "네, KB-TKL-001은 macOS 10.15 이상 버전에서 사용 가능합니다. 대부분의 기능이 정상적으로 작동하지만, 일부 특수 기능키는 시스템 환경설정에서 추가 설정이 필요할 수 있습니다. '시스템 환경설정 > 키보드'에서 '기능 키를 사용하려면 Fn 키 누르기' 옵션을 확인해주세요. RGB 커스터마이징은 QMK Toolbox를 통해 가능합니다.",
+  "category": "compatibility",
+  "subcategory": "keyboard",
+  "related_products": ["KB-TKL-001"],
+  "keywords": ["macOS", "Mac", "호환성", "기능키", "설정"],
+  "complexity_level": 2,
+  "answer_confidence": "high",
+  "created_at": "2025-09-30T19:10:00Z",
+  "updated_at": "2025-09-30T19:10:00Z",
+  "language": "ko"
+}

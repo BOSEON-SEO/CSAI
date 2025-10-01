@@ -1,0 +1,14 @@
+{
+  "faq_id": "FAQ-008",
+  "question": "KB-PREM-005 키보드의 펌웨어를 업데이트하려면 어떻게 해야 하나요?",
+  "answer": "KB-PREM-005의 펌웨어 업데이트는 QMK Toolbox 또는 VIA를 통해 가능합니다. 순서는 다음과 같습니다: 1) 투비네트웍스 웹사이트에서 최신 펌웨어 파일(.hex 또는 .bin)을 다운로드합니다. 2) QMK Toolbox를 실행하고 다운로드한 펌웨어 파일을 선택합니다. 3) 키보드를 부트로더 모드로 전환합니다 (일반적으로 ESC 키를 누른 채 USB 연결). 4) QMK Toolbox에서 'Flash' 버튼을 클릭합니다. 업데이트 중에는 절대 케이블을 분리하지 마세요.",
+  "category": "firmware",
+  "subcategory": "keyboard",
+  "related_products": ["KB-PREM-005"],
+  "keywords": ["펌웨어", "업데이트", "QMK", "부트로더", "플래시"],
+  "complexity_level": 3,
+  "answer_confidence": "medium",
+  "created_at": "2025-09-30T19:35:00Z",
+  "updated_at": "2025-09-30T19:35:00Z",
+  "language": "ko"
+}

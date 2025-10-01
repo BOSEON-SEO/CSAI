@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=123123, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../style/style.css">
+</head>
+
+<body>
+  <div id="config" class="p-4">
+    <form id="configForm" class="w-[250px]">
+      <fieldset class="border border-gray-300 rounded-md p-3 flex flex-col gap-2">
+        <legend class="text-xs px-1 bg-white">크롤링 설정</legend>
+        <div class="flex gap-3 justify-between items-center">
+          <label class="text-sm flex items-center">전송 블록 크기</label>
+          <input type="number" name="batchSize" id="batchSize" min="1"
+            class="px-2 py-0.5 font-sm text-right rounded-sm border border-gray-400 w-20" />
+        </div>
+        <div class="flex gap-3 justify-between items-center">
+          <label class="text-sm flex items-center">최소 크롤링 간격(초)</label>
+          <input type="number" name="intervalMin" id="intervalMin" min="1"
+            class="px-2 py-0.5 font-sm text-right rounded-sm border border-gray-400 w-20" />
+        </div>
+        <div class="flex gap-3 justify-between items-center">
+          <label class="text-sm flex items-center">최대 크롤링 간격(초)</label>
+          <input type="number" name="intervalMax" id="intervalMax" min="1"
+            class="px-2 py-0.5 font-sm text-right rounded-sm border border-gray-400 w-20" />
+        </div>
+      </fieldset>
+
+      <fieldset class="border border-gray-300 rounded-md p-3 mt-4 flex flex-col gap-2">
+        <legend class="text-xs px-1 bg-white">재시도 설정</legend>
+        <div class="flex gap-3 justify-between items-center">
+          <label class="text-sm flex items-center">최대 재시도 횟수</label>
+          <input type="number" name="retryMax" id="retryMax" min="0"
+            class="px-2 py-0.5 font-sm text-right rounded-sm border border-gray-400 w-20" />
+        </div>
+        <div class="flex gap-3 justify-between items-center">
+          <label class="text-sm flex items-center">재시도 간격(초)</label>
+          <input type="number" name="retryInterval" id="retryInterval" min="3"
+            class="px-2 py-0.5 font-sm text-right rounded-sm border border-gray-400 w-20" />
+        </div>
+      </fieldset>
+
+      <button type="submit"
+        class="w-full text-blue-500 py-1 rounded-md mt-4 cursor-pointer hover:bg-blue-50 hover:text-blue-400 transition-all duration-500">저장</button>
+    </form>
+  </div>
+
+  <script type="module" src="../dist/options.js"></script>
+</body>
+
+</html>

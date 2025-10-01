@@ -1,0 +1,107 @@
+{
+  "product_code": "MS-ERGO-003",
+  "product_name": "ToBe Ergonomic Vertical Mouse",
+  "category": "mouse",
+  "subcategory": "ergonomic",
+  "price": {
+    "original": 69000,
+    "discount": 59000,
+    "currency": "KRW"
+  },
+  "description": "수직형 인체공학 마우스. 자연스러운 악수 자세로 손목 부담 최소화",
+  "specifications": {
+    "sensor": {
+      "type": "Optical",
+      "max_dpi": 2400,
+      "dpi_levels": [800, 1200, 1600, 2400]
+    },
+    "buttons": {
+      "count": 6,
+      "programmable": 2,
+      "switch_type": "Standard Tactile"
+    },
+    "weight": "118g",
+    "dimensions": {
+      "length": 115,
+      "width": 75,
+      "height": 72,
+      "unit": "mm"
+    },
+    "grip_angle": "57도 (수직형)",
+    "hand_support": {
+      "thumb_rest": true,
+      "pinky_rest": true,
+      "wrist_support": "내장형 패딩"
+    }
+  },
+  "connectivity": {
+    "wired": {
+      "enabled": true,
+      "interface": "USB 2.0",
+      "cable_type": "직조 케이블",
+      "cable_length": 1.5,
+      "unit": "m"
+    },
+    "wireless": {
+      "enabled": false
+    }
+  },
+  "ergonomics": {
+    "design_type": "수직형 (Vertical)",
+    "recommended_for": [
+      "손목터널증후군 예방",
+      "장시간 컴퓨터 작업",
+      "손목 통증이 있는 사용자"
+    ],
+    "hand_size": "중형~대형 손에 적합"
+  },
+  "compatibility": {
+    "windows": ["Windows 11", "Windows 10", "Windows 8.1"],
+    "macos": ["macOS 10.14+"],
+    "linux": ["Ubuntu 20.04+"]
+  },
+  "software": {
+    "name": "ToBe Ergo Config",
+    "version": "2.1.0",
+    "features": [
+      "DPI 조정",
+      "버튼 리매핑 (2개 프로그래머블 버튼)",
+      "폴링레이트 설정"
+    ],
+    "onboard_memory": false
+  },
+  "firmware": {
+    "current_version": "1.3.0",
+    "release_date": "2025-08-05",
+    "update_method": "ToBe Ergo Config",
+    "changelog": [
+      "macOS Sonoma 호환성 추가",
+      "전력 관리 최적화"
+    ]
+  },
+  "warranty": {
+    "period_months": 18,
+    "coverage": "제조 결함 및 정상 사용 중 고장"
+  },
+  "included_items": [
+    "마우스 본체",
+    "손목 패드 (추가)",
+    "사용 설명서"
+  ],
+  "common_issues": [
+    {
+      "issue": "처음 사용 시 불편함",
+      "solution": "수직 마우스는 적응 기간이 필요합니다. 1-2주 정도 사용하시면 익숙해집니다"
+    },
+    {
+      "issue": "프로그래머블 버튼 설정이 안됨",
+      "solution": "ToBe Ergo Config 소프트웨어를 설치하고 관리자 권한으로 실행하세요"
+    },
+    {
+      "issue": "마우스가 너무 큼",
+      "solution": "이 모델은 중~대형 손 사이즈에 적합합니다. 손이 작으시면 MS-OFFI-002를 추천드립니다"
+    }
+  ],
+  "created_at": "2025-09-30T18:35:00Z",
+  "updated_at": "2025-09-30T18:35:00Z"
+}

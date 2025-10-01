@@ -1,0 +1,14 @@
+{
+  "faq_id": "FAQ-032",
+  "question": "학생이나 교육 기관에 할인 혜택이 있나요?",
+  "answer": "네, 학생 및 교육 기관을 대상으로 특별 할인을 제공합니다. 재학생은 학생증 인증 후 15% 할인, 교직원은 재직 증명서 제출 시 20% 할인이 적용됩니다. 교육 기관(초중고, 대학, 학원 등)의 단체 구매는 수량에 따라 최대 30% 할인이 가능합니다. 학생 할인은 홈페이지에서 학생 인증 후 자동 적용되며, 교육 기관 구매는 기업 구매 담당(edu@tobe.co.kr)으로 별도 문의 바랍니다.",
+  "category": "price",
+  "subcategory": "discount",
+  "related_products": [],
+  "keywords": ["학생 할인", "교육", "대학", "학교", "단체 구매"],
+  "complexity_level": 1,
+  "answer_confidence": "high",
+  "created_at": "2025-09-30T21:35:00Z",
+  "updated_at": "2025-09-30T21:35:00Z",
+  "language": "ko"
+}

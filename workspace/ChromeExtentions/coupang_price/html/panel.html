@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>쿠팡 가격 크롤러</title>
+  <link rel="stylesheet" href="../style/style.css">
+  <!-- MODIFIED: custom.css 추가 -->
+  <link rel="stylesheet" href="../style/custom.css">
+</head>
+
+<body>
+  <div id="app" class="p-4">
+    <button id="init-btn"
+      class="px-2 py-1 rounded-md cursor-pointer w-full border border-gray-300 bg-gray-50 text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-700 transition-all duration-300 shadow-xs hover:shadow-none hover:scale-99 disabled:opacity-30 disabled:pointer-events-none mt-1">
+      목록 가져오기
+    </button>
+
+    <div id="task-container">
+      <ul id="item-list"
+        class="flex flex-col gap-1 bg-gray-50 p-2 rounded-md mt-2 max-h-[740px] overflow-y-auto border border-gray-300 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+      </ul>
+
+      <div id="pagination-container" class="mt-2">
+        <div class="flex gap-1 align-center justify-between">
+          <div class="flex gap-1 align-center">
+            <a id="first-page-btn"
+              class="text-gray-500 cursor-pointer rounded-full hover:bg-gray-100 p-1 transition-colors duration-300 flex justify-center align-center pagination-default"
+              title="처음으로">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+              </svg>
+            </a>
+            <a id="prev-page-btn"
+              class="text-gray-500 cursor-pointer rounded-full hover:bg-gray-100 p-1 transition-colors duration-300 flex justify-center align-center pagination-default"
+              title="이전 페이지">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+              </svg>
+            </a>
+          </div>
+          <ul id="pagination" class="flex gap-1 align-center"></ul>
+          <div class="flex gap-1 align-center">
+            <a id="next-page-btn"
+              class="text-gray-500 cursor-pointer rounded-full hover:bg-gray-100 p-1 transition-colors duration-300 flex justify-center align-center pagination-default"
+              title="다음 페이지">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+            </a>
+            <a id="last-page-btn"
+              class="text-gray-500 cursor-pointer rounded-full hover:bg-gray-100 p-1 transition-colors duration-300 flex justify-center align-center pagination-default"
+              title="마지막으로">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div id="retry-info" class="flex gap-3 align-center mt-2 rounded-sm bg-gray-100 p-1">
+        <span id="fail-time" class="text-sm text-red-600">재시도 대기중</span>
+        <div class="flex gap-3 align-center text-sm">
+          <span>제품: <a id="fail-product-name" class="text-blue-500 hover:underline cursor-pointer"></a></span>
+          <span>다음 재시도 시간: <span id="fail-next-time"></span> (<span id="fail-retry-count"></span>)</span>
+        </div>
+        <button id="retry-stop-btn" class="text-red-500 hover:text-red-600 cursor-pointer text-sm underline"
+          title="재시도 중단">
+          취소
+        </button>
+      </div>
+
+      <div class="flex gap-1 align-center mt-4">
+        <button id="crawl-start-btn"
+          class="border-green-400 bg-green-100 text-green-700 px-2 py-1 rounded-md cursor-pointer flex-1 border text-sm transition-all duration-300 shadow-xs hover:shadow-none hover:bg-green-200 hover:text-green-800 hover:scale-99 disabled:opacity-30 disabled:pointer-events-none"
+          disabled>
+          시작
+        </button>
+        <button id="crawl-stop-btn"
+          class="border-red-300 bg-red-50 text-red-700 px-2 py-1 rounded-md cursor-pointer flex-1 border text-sm transition-all duration-300 shadow-xs hover:shadow-none hover:bg-red-200 hover:text-red-800 hover:scale-99 disabled:opacity-30 disabled:pointer-events-none"
+          disabled>
+          정지
+        </button>
+      </div>
+
+      <div id="progress-bar" class="mt-2 flex bg-gray-50 rounded-md border border-gray-100">
+        <div class="rounded-md flex-1 h-4 bg-white border border-gray-100"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../dist/panel.js"></script>
+</body>
+
+</html>
