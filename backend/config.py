@@ -1,7 +1,13 @@
-# 2025-09-30 17:45, Claude 작성
+# backend/config.py
+# 2025-10-02 18:20, Claude 작성
+
 """
 애플리케이션 설정 관리
-환경 변수 및 전역 설정
+
+루트 docker-compose.yml의 설정에 맞춰 업데이트:
+- Weaviate: localhost:8081 (Spring의 8080 충돌 방지)
+- MongoDB: localhost:27017 (인증 포함)
+- Redis: localhost:6379
 """
 
 from pydantic_settings import BaseSettings
@@ -23,17 +29,20 @@ class Settings(BaseSettings):
     API_HOST: str = "0.0.0.0"
     API_PORT: int = 8000
     
-    # Weaviate 설정
-    WEAVIATE_URL: str = "http://localhost:8080"
+    # Weaviate 설정 (루트 docker-compose.yml 기준)
+    WEAVIATE_URL: str = "http://localhost:8081"  # Spring 8080 충돌 방지
     WEAVIATE_API_KEY: Optional[str] = None
     
-    # MongoDB 설정
-    MONGODB_URL: str = "mongodb://localhost:27017"
-    MONGODB_DB_NAME: str = "cs_ai_agent"
+    # MongoDB 설정 (루트 docker-compose.yml 기준)
+    MONGODB_URL: str = "mongodb://admin:csai_admin_2025@localhost:27017"
+    MONGODB_DB_NAME: str = "csai"
     
     # Redis 설정 (캐싱)
     REDIS_URL: str = "redis://localhost:6379"
     REDIS_TTL: int = 3600  # 1시간
+    
+    # Sentence-BERT 모델
+    SENTENCE_BERT_MODEL: str = "jhgan/ko-sroberta-multitask"
     
     # Claude API 설정
     ANTHROPIC_API_KEY: str = ""  # .env에서 로드 필수
@@ -42,6 +51,11 @@ class Settings(BaseSettings):
     
     # 신뢰도 평가 임계값
     CONFIDENCE_THRESHOLD: float = 0.7  # 70% 이상이면 자동 답변
+    COMPLEXITY_THRESHOLD: float = 0.6  # 60% 이상이면 복잡한 질문
+    
+    # 검색 설정
+    SIMILAR_FAQ_LIMIT: int = 5  # 유사 FAQ 최대 개수
+    MIN_SIMILARITY: float = 0.6  # 최소 유사도
     
     # 로깅 설정
     LOG_LEVEL: str = "INFO"

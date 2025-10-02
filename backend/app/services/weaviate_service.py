@@ -1,10 +1,26 @@
-# 2025-09-30 17:45, Claude 작성
+# backend/app/services/weaviate_service.py
+# 2025-10-02 17:45, Claude 작성
+
 """
-Weaviate 벡터 검색 서비스
-FAQ 임베딩 검색 및 유사도 조회
+Weaviate 서비스
+
+FAQ 벡터 검색을 위한 Weaviate 서비스입니다.
+
+주요 기능:
+1. FAQ 임베딩 생성 및 저장
+2. 하이브리드 검색 (의미 검색 + 키워드 검색)
+3. 유사 FAQ 찾기
+4. 배치 업로드
+
+컬렉션:
+- FAQs: FAQ 벡터 데이터
 """
 
-from typing import List, Dict
+from typing import List, Optional, Dict, Any
+import weaviate
+from weaviate.classes.init import Auth
+from weaviate.classes.query import MetadataQuery
+from sentence_transformers import SentenceTransformer
 import logging
 
 logger = logging.getLogger(__name__)
@@ -12,125 +28,513 @@ logger = logging.getLogger(__name__)
 
 class WeaviateService:
     """
-    Weaviate 벡터 DB 서비스 클래스
+    Weaviate 서비스 클래스
     
-    기능:
-    - FAQ 임베딩 검색
-    - 하이브리드 검색 (벡터 + 키워드)
-    - 벡터 업로드
+    Sentence-BERT를 사용하여 FAQ를 임베딩하고
+    Weaviate에 저장/검색하는 서비스입니다.
+    
+    Example:
+        >>> service = WeaviateService("http://localhost:8080")
+        >>> await service.connect()
+        >>> await service.add_faq(faq_data)
+        >>> results = await service.search_similar_faqs("배송 언제 오나요?")
     """
     
-    def __init__(self, url: str = "http://localhost:8080", api_key: str = None):
-        """
-        WeaviateService 초기화
-        
-        Args:
-            url: Weaviate 서버 URL
-            api_key: API 키 (선택)
-            
-        TODO: Phase 1에서 구현
-        """
-        self.url = url
-        self.api_key = api_key
-        logger.info(f"WeaviateService 초기화: {url}")
-        
-        # TODO: Weaviate 클라이언트 연결
-        # self.client = weaviate.Client(url=url, auth_client_secret=...)
+    FAQ_COLLECTION = "FAQs"
     
-    def search_similar_faqs(
+    def __init__(
         self,
-        query_text: str,
-        keywords: List[str] = None,
-        limit: int = 5
-    ) -> List[Dict]:
+        weaviate_url: str,
+        model_name: str = 'jhgan/ko-sroberta-multitask',
+        api_key: Optional[str] = None
+    ):
         """
-        유사 FAQ 검색 (하이브리드)
+        Weaviate Service 초기화
         
         Args:
-            query_text: 검색 쿼리
-            keywords: 필터링 키워드 (선택)
-            limit: 결과 개수
-            
-        Returns:
-            List[Dict]: 유사 FAQ 리스트
-                - id: FAQ ID
-                - text: FAQ 내용
-                - similarity: 유사도 점수
-                
-        TODO: Phase 3에서 구현
+            weaviate_url: Weaviate 서버 URL
+            model_name: Sentence-BERT 모델명
+            api_key: Weaviate API 키 (클라우드 사용 시)
         """
-        logger.info(f"FAQ 검색: {query_text[:50]}...")
+        self.weaviate_url = weaviate_url
+        self.api_key = api_key
+        self.client: Optional[weaviate.WeaviateClient] = None
         
-        # TODO: Sentence-BERT로 쿼리 임베딩
-        # query_embedding = self.embed_text(query_text)
-        
-        # TODO: Weaviate 하이브리드 검색
-        # results = self.client.query.get("FAQ", [...]).with_near_vector(...).do()
-        
-        return []
+        # Sentence-BERT 모델 로드
+        logger.info(f"Sentence-BERT 모델 로드 중: {model_name}")
+        self.model = SentenceTransformer(model_name)
+        logger.info("✅ Sentence-BERT 모델 로드 완료")
     
-    def embed_text(self, text: str) -> List[float]:
+    async def connect(self):
+        """
+        Weaviate 연결
+        
+        연결 후 스키마를 확인하고 없으면 생성합니다.
+        """
+        try:
+            logger.info(f"Weaviate 연결 중: {self.weaviate_url}")
+            
+            # 연결 설정
+            if self.api_key:
+                # 클라우드 인증
+                self.client = weaviate.connect_to_wcs(
+                    cluster_url=self.weaviate_url,
+                    auth_credentials=Auth.api_key(self.api_key)
+                )
+            else:
+                # 로컬 연결
+                self.client = weaviate.connect_to_local(
+                    host=self.weaviate_url.replace('http://', '').replace('https://', '').split(':')[0],
+                    port=int(self.weaviate_url.split(':')[-1]) if ':' in self.weaviate_url else 8080
+                )
+            
+            # 연결 확인
+            if not self.client.is_ready():
+                raise ConnectionError("Weaviate 서버에 연결할 수 없습니다")
+            
+            # 스키마 확인 및 생성
+            await self._ensure_schema()
+            
+            logger.info("✅ Weaviate 연결 성공!")
+            
+        except Exception as e:
+            logger.error(f"❌ Weaviate 연결 실패: {e}")
+            raise
+    
+    async def disconnect(self):
+        """Weaviate 연결 종료"""
+        if self.client:
+            self.client.close()
+            logger.info("Weaviate 연결 종료")
+    
+    async def _ensure_schema(self):
+        """
+        스키마 확인 및 생성
+        
+        FAQs 컬렉션이 없으면 자동으로 생성합니다.
+        """
+        try:
+            # 컬렉션 존재 확인
+            collections = self.client.collections.list_all()
+            
+            if self.FAQ_COLLECTION not in [c.name for c in collections.values()]:
+                logger.info(f"'{self.FAQ_COLLECTION}' 컬렉션 생성 중...")
+                
+                # FAQ 컬렉션 생성
+                self.client.collections.create(
+                    name=self.FAQ_COLLECTION,
+                    description="고객 FAQ 벡터 저장소",
+                    properties=[
+                        {
+                            "name": "inquiry_no",
+                            "dataType": ["int"],
+                            "description": "문의 번호"
+                        },
+                        {
+                            "name": "brand_channel",
+                            "dataType": ["text"],
+                            "description": "브랜드 채널"
+                        },
+                        {
+                            "name": "inquiry_category",
+                            "dataType": ["text"],
+                            "description": "문의 카테고리"
+                        },
+                        {
+                            "name": "title",
+                            "dataType": ["text"],
+                            "description": "문의 제목"
+                        },
+                        {
+                            "name": "inquiry_content",
+                            "dataType": ["text"],
+                            "description": "문의 내용"
+                        },
+                        {
+                            "name": "answer_content",
+                            "dataType": ["text"],
+                            "description": "답변 내용"
+                        },
+                        {
+                            "name": "product_name",
+                            "dataType": ["text"],
+                            "description": "제품명"
+                        },
+                        {
+                            "name": "product_codes",
+                            "dataType": ["text[]"],
+                            "description": "제품 코드 리스트"
+                        },
+                    ],
+                    # 벡터 설정 (우리가 직접 임베딩 생성)
+                    vectorizer_config=None,
+                )
+                
+                logger.info(f"✅ '{self.FAQ_COLLECTION}' 컬렉션 생성 완료")
+            else:
+                logger.info(f"'{self.FAQ_COLLECTION}' 컬렉션 이미 존재")
+                
+        except Exception as e:
+            logger.error(f"스키마 생성 실패: {e}")
+            raise
+    
+    def _create_embedding(self, text: str) -> List[float]:
         """
         텍스트 임베딩 생성
+        
+        Sentence-BERT를 사용하여 텍스트를 벡터로 변환합니다.
         
         Args:
             text: 임베딩할 텍스트
             
         Returns:
-            List[float]: 임베딩 벡터
-            
-        TODO: Phase 2에서 구현
+            임베딩 벡터 (리스트)
         """
-        # TODO: Sentence-BERT 모델로 임베딩
-        return []
+        embedding = self.model.encode(text)
+        return embedding.tolist()
     
-    def upload_faq(self, faq_id: str, text: str, metadata: Dict) -> bool:
+    async def add_faq(
+        self,
+        inquiry_no: int,
+        brand_channel: str,
+        inquiry_category: str,
+        title: str,
+        inquiry_content: str,
+        answer_content: Optional[str] = None,
+        product_name: Optional[str] = None,
+        product_codes: Optional[List[str]] = None
+    ) -> bool:
         """
-        FAQ 임베딩 업로드
+        FAQ 추가
+        
+        FAQ를 임베딩하여 Weaviate에 저장합니다.
         
         Args:
-            faq_id: FAQ ID
-            text: FAQ 텍스트
-            metadata: 메타데이터
+            inquiry_no: 문의 번호
+            brand_channel: 브랜드 채널
+            inquiry_category: 카테고리
+            title: 제목
+            inquiry_content: 문의 내용
+            answer_content: 답변 내용 (선택)
+            product_name: 제품명 (선택)
+            product_codes: 제품 코드 (선택)
             
         Returns:
-            bool: 업로드 성공 여부
+            성공 여부
+        """
+        try:
+            # 임베딩할 텍스트 생성 (제목 + 내용)
+            text_to_embed = f"{title} {inquiry_content}"
             
-        TODO: Phase 2에서 구현
-        """
-        logger.info(f"FAQ 업로드: {faq_id}")
-        
-        # TODO: 임베딩 생성 및 업로드
-        
-        return False
+            # 임베딩 생성
+            vector = self._create_embedding(text_to_embed)
+            
+            # Weaviate에 저장
+            collection = self.client.collections.get(self.FAQ_COLLECTION)
+            
+            # 기존 데이터 확인 (inquiry_no로)
+            existing = collection.query.fetch_objects(
+                filters={
+                    "path": ["inquiry_no"],
+                    "operator": "Equal",
+                    "valueInt": inquiry_no
+                },
+                limit=1
+            )
+            
+            if existing.objects:
+                # 업데이트
+                uuid = existing.objects[0].uuid
+                collection.data.update(
+                    uuid=uuid,
+                    properties={
+                        "brand_channel": brand_channel,
+                        "inquiry_category": inquiry_category,
+                        "title": title,
+                        "inquiry_content": inquiry_content,
+                        "answer_content": answer_content,
+                        "product_name": product_name,
+                        "product_codes": product_codes or [],
+                    },
+                    vector=vector
+                )
+                logger.info(f"FAQ 업데이트: {inquiry_no}")
+            else:
+                # 새로 생성
+                collection.data.insert(
+                    properties={
+                        "inquiry_no": inquiry_no,
+                        "brand_channel": brand_channel,
+                        "inquiry_category": inquiry_category,
+                        "title": title,
+                        "inquiry_content": inquiry_content,
+                        "answer_content": answer_content,
+                        "product_name": product_name,
+                        "product_codes": product_codes or [],
+                    },
+                    vector=vector
+                )
+                logger.info(f"FAQ 추가: {inquiry_no}")
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"FAQ 추가 실패 ({inquiry_no}): {e}")
+            return False
     
-    def batch_upload_faqs(self, faqs: List[Dict]) -> int:
+    async def add_faqs_batch(self, faqs: List[Dict[str, Any]]) -> Dict[str, int]:
         """
-        FAQ 일괄 업로드
+        FAQ 배치 추가
         
         Args:
-            faqs: FAQ 리스트
+            faqs: FAQ 데이터 리스트
             
         Returns:
-            int: 업로드된 FAQ 개수
-            
-        TODO: Phase 2에서 구현
+            {'succeeded': int, 'failed': int}
         """
-        logger.info(f"FAQ 일괄 업로드: {len(faqs)}개")
+        succeeded = 0
+        failed = 0
         
-        count = 0
-        # TODO: 일괄 업로드 로직
+        for faq in faqs:
+            if await self.add_faq(
+                inquiry_no=faq['inquiry_no'],
+                brand_channel=faq['brand_channel'],
+                inquiry_category=faq['inquiry_category'],
+                title=faq['title'],
+                inquiry_content=faq['inquiry_content'],
+                answer_content=faq.get('answer_content'),
+                product_name=faq.get('product_name'),
+                product_codes=faq.get('product_codes', [])
+            ):
+                succeeded += 1
+            else:
+                failed += 1
         
-        return count
+        logger.info(f"배치 추가 완료: 성공 {succeeded}, 실패 {failed}")
+        
+        return {
+            'succeeded': succeeded,
+            'failed': failed
+        }
     
-    def health_check(self) -> bool:
+    async def search_similar_faqs(
+        self,
+        query_text: str,
+        brand_channel: Optional[str] = None,
+        category: Optional[str] = None,
+        limit: int = 5,
+        min_similarity: float = 0.7
+    ) -> List[Dict[str, Any]]:
         """
-        Weaviate 연결 상태 확인
+        유사 FAQ 검색 (벡터 검색)
+        
+        Args:
+            query_text: 검색할 텍스트
+            brand_channel: 브랜드 필터
+            category: 카테고리 필터
+            limit: 최대 개수
+            min_similarity: 최소 유사도 (0-1)
+            
+        Returns:
+            유사 FAQ 리스트
+        """
+        try:
+            # 쿼리 임베딩 생성
+            query_vector = self._create_embedding(query_text)
+            
+            # 컬렉션 가져오기
+            collection = self.client.collections.get(self.FAQ_COLLECTION)
+            
+            # 필터 생성
+            filters = {}
+            if brand_channel:
+                filters["brand_channel"] = brand_channel
+            if category:
+                filters["inquiry_category"] = category
+            
+            # 벡터 검색
+            response = collection.query.near_vector(
+                near_vector=query_vector,
+                limit=limit,
+                return_metadata=MetadataQuery(distance=True),
+                filters=filters if filters else None
+            )
+            
+            # 결과 변환
+            results = []
+            for obj in response.objects:
+                # 거리를 유사도로 변환 (코사인 거리 → 유사도)
+                # distance는 0에 가까울수록 유사 (0 = 완전 동일)
+                similarity = 1 - obj.metadata.distance
+                
+                if similarity >= min_similarity:
+                    results.append({
+                        'inquiry_no': obj.properties['inquiry_no'],
+                        'title': obj.properties['title'],
+                        'inquiry_content': obj.properties['inquiry_content'],
+                        'answer_content': obj.properties.get('answer_content'),
+                        'brand_channel': obj.properties['brand_channel'],
+                        'inquiry_category': obj.properties['inquiry_category'],
+                        'product_name': obj.properties.get('product_name'),
+                        'similarity': similarity
+                    })
+            
+            logger.info(f"유사 FAQ 검색: {len(results)}개 발견 (최소 유사도: {min_similarity})")
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"유사 FAQ 검색 실패: {e}")
+            return []
+    
+    async def hybrid_search(
+        self,
+        query_text: str,
+        keywords: List[str],
+        brand_channel: Optional[str] = None,
+        category: Optional[str] = None,
+        limit: int = 5
+    ) -> List[Dict[str, Any]]:
+        """
+        하이브리드 검색 (벡터 + 키워드)
+        
+        의미 검색과 키워드 검색을 결합합니다.
+        
+        Args:
+            query_text: 검색할 텍스트
+            keywords: 키워드 리스트
+            brand_channel: 브랜드 필터
+            category: 카테고리 필터
+            limit: 최대 개수
+            
+        Returns:
+            검색 결과 리스트
+        """
+        try:
+            # 쿼리 임베딩 생성
+            query_vector = self._create_embedding(query_text)
+            
+            # 컬렉션 가져오기
+            collection = self.client.collections.get(self.FAQ_COLLECTION)
+            
+            # 필터 생성
+            filters = {}
+            if brand_channel:
+                filters["brand_channel"] = brand_channel
+            if category:
+                filters["inquiry_category"] = category
+            
+            # 하이브리드 검색
+            # alpha=0.5: 벡터 검색과 키워드 검색을 50:50으로
+            response = collection.query.hybrid(
+                query=query_text,
+                vector=query_vector,
+                alpha=0.5,  # 0=순수 키워드, 1=순수 벡터, 0.5=하이브리드
+                limit=limit,
+                return_metadata=MetadataQuery(score=True),
+                filters=filters if filters else None
+            )
+            
+            # 결과 변환
+            results = []
+            for obj in response.objects:
+                results.append({
+                    'inquiry_no': obj.properties['inquiry_no'],
+                    'title': obj.properties['title'],
+                    'inquiry_content': obj.properties['inquiry_content'],
+                    'answer_content': obj.properties.get('answer_content'),
+                    'brand_channel': obj.properties['brand_channel'],
+                    'inquiry_category': obj.properties['inquiry_category'],
+                    'product_name': obj.properties.get('product_name'),
+                    'score': obj.metadata.score  # 하이브리드 점수
+                })
+            
+            logger.info(f"하이브리드 검색: {len(results)}개 발견")
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"하이브리드 검색 실패: {e}")
+            return []
+    
+    async def delete_faq(self, inquiry_no: int) -> bool:
+        """
+        FAQ 삭제
+        
+        Args:
+            inquiry_no: 문의 번호
+            
+        Returns:
+            성공 여부
+        """
+        try:
+            collection = self.client.collections.get(self.FAQ_COLLECTION)
+            
+            # inquiry_no로 찾기
+            result = collection.query.fetch_objects(
+                filters={
+                    "path": ["inquiry_no"],
+                    "operator": "Equal",
+                    "valueInt": inquiry_no
+                },
+                limit=1
+            )
+            
+            if result.objects:
+                uuid = result.objects[0].uuid
+                collection.data.delete_by_id(uuid)
+                logger.info(f"FAQ 삭제: {inquiry_no}")
+                return True
+            else:
+                logger.warning(f"FAQ를 찾을 수 없음: {inquiry_no}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"FAQ 삭제 실패 ({inquiry_no}): {e}")
+            return False
+    
+    async def get_total_count(self) -> int:
+        """
+        저장된 FAQ 총 개수 조회
         
         Returns:
-            bool: 연결 성공 여부
-            
-        TODO: Phase 1에서 구현
+            FAQ 개수
         """
-        # TODO: self.client.is_ready()
-        return False
+        try:
+            collection = self.client.collections.get(self.FAQ_COLLECTION)
+            response = collection.aggregate.over_all(total_count=True)
+            return response.total_count
+        except Exception as e:
+            logger.error(f"총 개수 조회 실패: {e}")
+            return 0
+
+
+# 싱글톤 인스턴스
+_weaviate_service: Optional[WeaviateService] = None
+
+
+def get_weaviate_service() -> WeaviateService:
+    """
+    Weaviate Service 싱글톤 인스턴스 반환
+    
+    FastAPI의 Depends에서 사용합니다.
+    """
+    global _weaviate_service
+    if _weaviate_service is None:
+        raise RuntimeError("Weaviate Service가 초기화되지 않았습니다")
+    return _weaviate_service
+
+
+def init_weaviate_service(
+    weaviate_url: str,
+    model_name: str = 'jhgan/ko-sroberta-multitask',
+    api_key: Optional[str] = None
+):
+    """
+    Weaviate Service 초기화
+    
+    main.py에서 앱 시작 시 호출합니다.
+    """
+    global _weaviate_service
+    _weaviate_service = WeaviateService(weaviate_url, model_name, api_key)
+    return _weaviate_service
