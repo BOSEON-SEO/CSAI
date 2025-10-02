@@ -24,7 +24,8 @@ services:
     image: semitechnologies/weaviate:latest
     container_name: csai-weaviate
     ports:
-      - "8081:8080"  # 호스트:컨테이너 (Spring의 8080과 충돌 방지)
+      - "8081:8080"  # 호스트:컨테이너 (Spring의 8080과 충돌 방지). HTTP API
+      - "50051:50051" # gRPC API
     environment:
       # 기본 쿼리 결과 제한 (한 번에 최대 25개까지 반환)
       QUERY_DEFAULTS_LIMIT: 25

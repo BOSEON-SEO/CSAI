@@ -2,7 +2,7 @@
 
 투비네트웍스 글로벌 FAQ 자동 응답 시스템
 
-**최종 업데이트**: 2025-10-02 10:10, Claude 업데이트
+**최종 업데이트**: 2025-10-02 15:30, Claude 업데이트
 
 ---
 
@@ -19,12 +19,11 @@
 - ✅ Phase 0: 시스템 아키텍처 설계 완료 (2025-09-30)
 - ✅ Phase 1: 인프라 구축 완료 (2025-10-01)
 - ✅ Phase 2: 데이터 준비 완료 (2025-10-02)
-- 🔄 **Phase 3: AI 코어 개발 진행 중** (2025-10-02 시작)
-  - ✅ 제품 데이터 준비 완료 (160개)
-  - ✅ FAQ 데이터 수집 완료 (100건)
-  - ✅ 임포트 스크립트 작성 완료
-  - ⏳ MongoDB 데이터 임포트 직전
-  - ⏳ Weaviate 벡터 임베딩 준비 중
+- 🔄 **Phase 3: AI 코어 개발 진행 중** (2025-10-02 시작, 20% 완료)
+  - ✅ MongoDB FAQ 1,581건 임포트 완료
+  - ✅ Weaviate 벡터 DB 1,581개 임베딩 완룼
+  - ✅ GPU 최적화 (RTX 3050, 10배 빠른 처리)
+  - ⏳ QuestionAnalyzer 구현 예정
 
 ---
 
@@ -106,7 +105,7 @@ python main.py
 | Phase 5 | 통합 테스트 | 📅 | 예정 |
 | Phase 6 | 프로덕션 배포 | 📅 | 예정 |
 
-**전체 진행률**: 50%
+**전체 진행률**: 52% (Phase 3 진행 중 20%)
 
 ---
 
@@ -127,21 +126,21 @@ python main.py
 
 ## 🎯 다음 작업 (Phase 3)
 
-### 즉시 진행
-1. **MongoDB 데이터 임포트** ⭐ 최우선
+### 다음 작업
+1. **벡터 검색 테스트** ⭐ 진행 예정
    ```bash
-   cd backend/scripts
-   python import_data.py --type products --source ../../data/raw/products_keychron.csv --brand KEYCHRON
+   # Weaviate 하이브리드 검색 테스트
+   # 유사도 점수 threshold 설정
    ```
 
-2. **Weaviate 임베딩 생성**
-   ```bash
-   python import_to_weaviate.py --type faqs --brand KEYCHRON
-   ```
-
-3. **QuestionAnalyzer 구현**
+2. **QuestionAnalyzer 구현**
    - Sentence-BERT + spaCy 통합
    - 질문 분석 로직 작성
+   - 복잡도 점수 계산
+
+3. **WeaviateService 구현**
+   - 하이브리드 검색 API
+   - 필터링 (브랜드, 카테고리)
 
 ---
 
@@ -190,6 +189,6 @@ python -c "import torch; print(torch.cuda.is_available())"
 ---
 
 **프로젝트 생성일**: 2025-09-23  
-**최종 업데이트**: 2025-10-02 10:10  
-**버전**: 0.3.0  
-**상태**: Phase 3 진행 중 (MongoDB 임포트 직전)
+**최종 업데이트**: 2025-10-02 15:30  
+**버전**: 0.4.0  
+**상태**: Phase 3 진행 중 20% (벡터 DB 구축 완료)

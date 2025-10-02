@@ -58,7 +58,7 @@ logger = logging.getLogger(__name__)
 
 # MongoDB 설정
 MONGO_URI = "mongodb://admin:csai_admin_2025@localhost:27017/"
-MONGO_DATABASE = "csai_database"
+MONGO_DATABASE = "csai"
 
 # Weaviate 설정
 WEAVIATE_URL = "http://localhost:8081"
