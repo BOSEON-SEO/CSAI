@@ -1,8 +1,9 @@
 # backend/tests/test_services.py
 # 2025-10-02 18:15, Claude 작성
+# 2025-10-02 09:30, Claude 업데이트 (QuestionAnalyzer 테스트 추가)
 
 """
-MongoDB와 Weaviate Service 테스트
+MongoDB, Weaviate, QuestionAnalyzer Service 테스트
 
 루트 디렉토리의 docker-compose.yml 사용
 - Weaviate: localhost:8081 (8080은 Spring이 사용 중)
@@ -10,17 +11,20 @@ MongoDB와 Weaviate Service 테스트
 
 사용법:
     python tests/test_services.py
+    python tests/test_services.py --analyzer-only  # QuestionAnalyzer만 테스트
 """
 
 import asyncio
 import sys
 import os
+import argparse
 
 # 경로 설정
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app.services.mongodb_service import MongoDBService
 from app.services.weaviate_service import WeaviateService
+from app.services.question_analyzer import QuestionAnalyzer, format_analysis_result
 
 
 async def test_mongodb():
@@ -192,6 +196,161 @@ async def test_weaviate():
         traceback.print_exc()
 
 
+async def test_question_analyzer():
+    """QuestionAnalyzer 테스트"""
+    print("\n" + "="*70)
+    print("QuestionAnalyzer 테스트")
+    print("="*70 + "\n")
+    
+    # Weaviate 연결 (QuestionAnalyzer가 사용)
+    weaviate = WeaviateService(
+        weaviate_url="http://localhost:8081"
+    )
+    
+    try:
+        await weaviate.connect()
+        
+        # 테스트용 FAQ 데이터 준비
+        print("0. 테스트용 FAQ 데이터 준비...")
+        test_faqs = [
+            {
+                'inquiry_no': 888881,
+                'brand_channel': 'KEYCHRON',
+                'inquiry_category': '배송',
+                'title': '배송 지연 문의',
+                'inquiry_content': '주문한 지 일주일이 지났는데 아직도 배송이 안 왔어요. 언제쯤 받을 수 있을까요?',
+                'answer_content': '배송은 영업일 기준 2-3일 소요됩니다. 주문 폭주로 인해 일부 지연이 발생하고 있습니다.'
+            },
+            {
+                'inquiry_no': 888882,
+                'brand_channel': 'KEYCHRON',
+                'inquiry_category': '반품',
+                'title': '개봉 후 반품',
+                'inquiry_content': '키보드를 개봉해서 테스트해봤는데 색상이 마음에 안 들어요. 반품 가능한가요?',
+                'answer_content': '개봉 후에도 단순 변심으로 반품이 가능합니다. 다만 제품에 흠집이나 사용 흔적이 없어야 합니다.'
+            },
+            {
+                'inquiry_no': 888883,
+                'brand_channel': 'KEYCHRON',
+                'inquiry_category': '상품',
+                'title': 'K10 블루투스 연결 문제',
+                'inquiry_content': 'K10 PRO MAX 키보드인데요, 블루투스가 계속 끊겨요. 어떻게 해야 하나요?',
+                'answer_content': '토글 스위치를 BT로 변경 후 FN+Z+J를 5초간 눌러 초기화한 다음, FN+1을 5초간 눌러 재페어링 해주세요.',
+                'product_name': '키크론 K10 PRO MAX',
+                'product_codes': ['K10', 'PRO MAX']
+            },
+            {
+                'inquiry_no': 888884,
+                'brand_channel': 'KEYCHRON',
+                'inquiry_category': '상품',
+                'title': 'K10 펌웨어 업데이트',
+                'inquiry_content': 'K10 키보드 펌웨어 업데이트는 어떻게 하나요? 최신 버전이 나왔다고 들었어요.',
+                'answer_content': '키크론 공식 홈페이지 > 런처 시작하기에서 펌웨어 업데이트를 진행하실 수 있습니다.',
+                'product_name': '키크론 K10 PRO MAX',
+                'product_codes': ['K10', 'PRO MAX', 'firmware']
+            }
+        ]
+        
+        await weaviate.add_faqs_batch(test_faqs)
+        print(f"   ✅ {len(test_faqs)}개 FAQ 추가 완료\n")
+        
+        # QuestionAnalyzer 초기화
+        print("1. QuestionAnalyzer 초기화...")
+        analyzer = QuestionAnalyzer(
+            weaviate_service=weaviate
+        )
+        print("   ✅ 초기화 완료\n")
+        
+        # 테스트 케이스
+        test_cases = [
+            {
+                'name': '단순 배송 문의',
+                'inquiry_content': '주문한 키보드 언제 배송되나요?',
+                'brand_channel': 'KEYCHRON',
+                'title': '배송 문의',
+                'expected_category': '배송',
+                'expected_complexity': 'LOW'
+            },
+            {
+                'name': '개봉 후 반품 문의',
+                'inquiry_content': 'K10 키보드 개봉했는데 색이 맘에 안 들어서 반품하고 싶어요. 가능한가요?',
+                'brand_channel': 'KEYCHRON',
+                'title': '반품 문의',
+                'product_name': '키크론 K10 PRO MAX',
+                'expected_category': '반품',
+                'expected_complexity': 'LOW'
+            },
+            {
+                'name': '제품 문제 (블루투스)',
+                'inquiry_content': 'K10 PRO MAX 키보드 블루투스가 자꾸 끊기는데 어떻게 해야 하나요?',
+                'brand_channel': 'KEYCHRON',
+                'title': 'K10 블루투스 문제',
+                'product_name': '키크론 K10 PRO MAX',
+                'expected_category': '상품',
+                'expected_complexity': 'MEDIUM'
+            },
+            {
+                'name': '고복잡도 (펌웨어)',
+                'inquiry_content': 'K10 키보드 펌웨어를 최신 버전으로 업데이트하고 싶은데, BIOS에서 인식이 안 돼요. 호환성 문제인가요?',
+                'brand_channel': 'KEYCHRON',
+                'title': '펌웨어 업데이트 문제',
+                'product_name': '키크론 K10 PRO MAX',
+                'expected_category': '상품',
+                'expected_complexity': 'HIGH'
+            }
+        ]
+        
+        # 각 테스트 케이스 실행
+        for i, test_case in enumerate(test_cases, 1):
+            print(f"\n{'='*70}")
+            print(f"테스트 케이스 {i}: {test_case['name']}")
+            print(f"{'='*70}\n")
+            
+            print(f"📝 문의 내용: {test_case['inquiry_content']}\n")
+            
+            # 분석 실행
+            result = await analyzer.analyze(
+                inquiry_content=test_case['inquiry_content'],
+                brand_channel=test_case['brand_channel'],
+                title=test_case.get('title'),
+                product_name=test_case.get('product_name')
+            )
+            
+            # 결과 출력
+            print(format_analysis_result(result))
+            
+            # 검증
+            print("\n📊 검증 결과:")
+            print(f"   카테고리 예상: {test_case['expected_category']} / 실제: {result.category}")
+            
+            complexity_level = 'HIGH' if result.complexity_score > 0.5 else 'MEDIUM' if result.complexity_score > 0.2 else 'LOW'
+            print(f"   복잡도 예상: {test_case['expected_complexity']} / 실제: {complexity_level}")
+            
+            if result.should_defer:
+                print(f"   ⚠️  전가 필요: {result.defer_reason}")
+            else:
+                print(f"   ✅ AI 답변 가능 (신뢰도: {result.confidence:.2f})")
+            
+            print()
+        
+        # 정리
+        print("\n" + "="*70)
+        print("정리: 테스트 데이터 삭제")
+        print("="*70 + "\n")
+        
+        for faq in test_faqs:
+            await weaviate.delete_faq(faq['inquiry_no'])
+        print("   ✅ 정리 완료")
+        
+        await weaviate.disconnect()
+        print("\n✅ QuestionAnalyzer 테스트 완료!\n")
+        
+    except Exception as e:
+        print(f"\n❌ QuestionAnalyzer 테스트 실패: {e}\n")
+        import traceback
+        traceback.print_exc()
+
+
 async def test_integration():
     """통합 테스트 (MongoDB + Weaviate)"""
     print("\n" + "="*70)
@@ -285,10 +444,15 @@ async def test_integration():
         traceback.print_exc()
 
 
-async def main():
+async def main(analyzer_only: bool = False):
     """메인 테스트 함수"""
     print("\n" + "🧪"*35)
-    print("MongoDB & Weaviate Service 테스트 시작")
+    
+    if analyzer_only:
+        print("QuestionAnalyzer 테스트 시작")
+    else:
+        print("전체 서비스 테스트 시작")
+    
     print("🧪"*35)
     
     print("\n📌 연결 정보:")
@@ -297,14 +461,15 @@ async def main():
     print("   - 루트 docker-compose.yml 사용\n")
     
     try:
-        # MongoDB 테스트
-        await test_mongodb()
-        
-        # Weaviate 테스트
-        await test_weaviate()
-        
-        # 통합 테스트
-        await test_integration()
+        if analyzer_only:
+            # QuestionAnalyzer만 테스트
+            await test_question_analyzer()
+        else:
+            # 전체 테스트
+            await test_mongodb()
+            await test_weaviate()
+            await test_question_analyzer()
+            await test_integration()
         
         print("="*70)
         print("🎉 모든 테스트 완료!")
@@ -317,4 +482,8 @@ async def main():
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    parser = argparse.ArgumentParser(description='서비스 테스트')
+    parser.add_argument('--analyzer-only', action='store_true', help='QuestionAnalyzer만 테스트')
+    args = parser.parse_args()
+    
+    asyncio.run(main(analyzer_only=args.analyzer_only))

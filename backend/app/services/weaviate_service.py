@@ -1,5 +1,6 @@
 # backend/app/services/weaviate_service.py
 # 2025-10-02 17:45, Claude 작성
+# 2025-10-02 15:50, Claude 업데이트 (Weaviate v4 API 수정 - data_type 필드명 변경)
 
 """
 Weaviate 서비스
@@ -19,6 +20,7 @@ FAQ 벡터 검색을 위한 Weaviate 서비스입니다.
 from typing import List, Optional, Dict, Any
 import weaviate
 from weaviate.classes.init import Auth
+from weaviate.classes.config import Property, DataType
 from weaviate.classes.query import MetadataQuery
 from sentence_transformers import SentenceTransformer
 import logging
@@ -115,56 +117,54 @@ class WeaviateService:
         """
         try:
             # 컬렉션 존재 확인
-            collections = self.client.collections.list_all()
-            
-            if self.FAQ_COLLECTION not in [c.name for c in collections.values()]:
+            if not self.client.collections.exists(self.FAQ_COLLECTION):
                 logger.info(f"'{self.FAQ_COLLECTION}' 컬렉션 생성 중...")
                 
-                # FAQ 컬렉션 생성
+                # FAQ 컬렉션 생성 (Weaviate v4 API)
                 self.client.collections.create(
                     name=self.FAQ_COLLECTION,
                     description="고객 FAQ 벡터 저장소",
                     properties=[
-                        {
-                            "name": "inquiry_no",
-                            "dataType": ["int"],
-                            "description": "문의 번호"
-                        },
-                        {
-                            "name": "brand_channel",
-                            "dataType": ["text"],
-                            "description": "브랜드 채널"
-                        },
-                        {
-                            "name": "inquiry_category",
-                            "dataType": ["text"],
-                            "description": "문의 카테고리"
-                        },
-                        {
-                            "name": "title",
-                            "dataType": ["text"],
-                            "description": "문의 제목"
-                        },
-                        {
-                            "name": "inquiry_content",
-                            "dataType": ["text"],
-                            "description": "문의 내용"
-                        },
-                        {
-                            "name": "answer_content",
-                            "dataType": ["text"],
-                            "description": "답변 내용"
-                        },
-                        {
-                            "name": "product_name",
-                            "dataType": ["text"],
-                            "description": "제품명"
-                        },
-                        {
-                            "name": "product_codes",
-                            "dataType": ["text[]"],
-                            "description": "제품 코드 리스트"
-                        },
+                        Property(
+                            name="inquiry_no",
+                            data_type=DataType.INT,
+                            description="문의 번호"
+                        ),
+                        Property(
+                            name="brand_channel",
+                            data_type=DataType.TEXT,
+                            description="브랜드 채널"
+                        ),
+                        Property(
+                            name="inquiry_category",
+                            data_type=DataType.TEXT,
+                            description="문의 카테고리"
+                        ),
+                        Property(
+                            name="title",
+                            data_type=DataType.TEXT,
+                            description="문의 제목"
+                        ),
+                        Property(
+                            name="inquiry_content",
+                            data_type=DataType.TEXT,
+                            description="문의 내용"
+                        ),
+                        Property(
+                            name="answer_content",
+                            data_type=DataType.TEXT,
+                            description="답변 내용"
+                        ),
+                        Property(
+                            name="product_name",
+                            data_type=DataType.TEXT,
+                            description="제품명"
+                        ),
+                        Property(
+                            name="product_codes",
+                            data_type=DataType.TEXT_ARRAY,
+                            description="제품 코드 리스트"
+                        ),
                     ],
                     # 벡터 설정 (우리가 직접 임베딩 생성)
                     vectorizer_config=None,
@@ -233,12 +233,10 @@ class WeaviateService:
             collection = self.client.collections.get(self.FAQ_COLLECTION)
             
             # 기존 데이터 확인 (inquiry_no로)
+            from weaviate.classes.query import Filter
+            
             existing = collection.query.fetch_objects(
-                filters={
-                    "path": ["inquiry_no"],
-                    "operator": "Equal",
-                    "valueInt": inquiry_no
-                },
+                filters=Filter.by_property("inquiry_no").equal(inquiry_no),
                 limit=1
             )
             
@@ -346,18 +344,23 @@ class WeaviateService:
             collection = self.client.collections.get(self.FAQ_COLLECTION)
             
             # 필터 생성
-            filters = {}
-            if brand_channel:
-                filters["brand_channel"] = brand_channel
-            if category:
-                filters["inquiry_category"] = category
+            from weaviate.classes.query import Filter
+            
+            filters = None
+            if brand_channel and category:
+                filters = Filter.by_property("brand_channel").equal(brand_channel) & \
+                          Filter.by_property("inquiry_category").equal(category)
+            elif brand_channel:
+                filters = Filter.by_property("brand_channel").equal(brand_channel)
+            elif category:
+                filters = Filter.by_property("inquiry_category").equal(category)
             
             # 벡터 검색
             response = collection.query.near_vector(
                 near_vector=query_vector,
                 limit=limit,
                 return_metadata=MetadataQuery(distance=True),
-                filters=filters if filters else None
+                filters=filters
             )
             
             # 결과 변환
@@ -418,11 +421,16 @@ class WeaviateService:
             collection = self.client.collections.get(self.FAQ_COLLECTION)
             
             # 필터 생성
-            filters = {}
-            if brand_channel:
-                filters["brand_channel"] = brand_channel
-            if category:
-                filters["inquiry_category"] = category
+            from weaviate.classes.query import Filter
+            
+            filters = None
+            if brand_channel and category:
+                filters = Filter.by_property("brand_channel").equal(brand_channel) & \
+                          Filter.by_property("inquiry_category").equal(category)
+            elif brand_channel:
+                filters = Filter.by_property("brand_channel").equal(brand_channel)
+            elif category:
+                filters = Filter.by_property("inquiry_category").equal(category)
             
             # 하이브리드 검색
             # alpha=0.5: 벡터 검색과 키워드 검색을 50:50으로
@@ -432,7 +440,7 @@ class WeaviateService:
                 alpha=0.5,  # 0=순수 키워드, 1=순수 벡터, 0.5=하이브리드
                 limit=limit,
                 return_metadata=MetadataQuery(score=True),
-                filters=filters if filters else None
+                filters=filters
             )
             
             # 결과 변환
@@ -471,12 +479,10 @@ class WeaviateService:
             collection = self.client.collections.get(self.FAQ_COLLECTION)
             
             # inquiry_no로 찾기
+            from weaviate.classes.query import Filter
+            
             result = collection.query.fetch_objects(
-                filters={
-                    "path": ["inquiry_no"],
-                    "operator": "Equal",
-                    "valueInt": inquiry_no
-                },
+                filters=Filter.by_property("inquiry_no").equal(inquiry_no),
                 limit=1
             )
             
